@@ -1,6 +1,8 @@
 #include "camera.h"
 #include "ui_camera.h"
 #include "snimokcam.h"
+#include "database.h"
+#include "facerecognition.h"
 
 #include <QMainWindow>
 #include <QDebug>
@@ -10,6 +12,8 @@
 #include <QPixmap>
 #include <QCloseEvent>
 #include <QMessageBox>
+
+#include <opencv2/imgproc/imgproc.hpp>
 
 camera::camera(QWidget *parent) :
     QDialog(parent),
@@ -72,8 +76,31 @@ void camera::on_pushButton_2_pressed()
         }
         qApp->processEvents();
     }
-    imwrite("C:\\temp\\a_file_that_is_no_longer_needed_and_you_can_delete_it.png", frame);
+    const string current_path = "C:/Users/PCOW/Documents/qtproj/OPD3/";
+    FaceRecognition face_recognition(current_path + "XML/haarcascade_frontalface_default.xml", current_path + "XML/recognizer.xml", current_path + "persons.db", 0);
+
+    Mat greyData;
+    cv::cvtColor(frame, greyData, cv::COLOR_BGR2GRAY);
+
+    int predicate_label = 0;
+    double is_sure = 0;
+    face_recognition.FindPerson(greyData, predicate_label, is_sure);
+    DBase::clearbus();
+    DBase DB(current_path + "persons.db");
+    DBase::execute(DB, "SELECT IMG FROM PEOPLE WHERE ID = " + to_string(predicate_label));
+
+    DB.~DBase();
+    int ID = predicate_label;
+
+    QImage qimg((unsigned char*)greyData.data,
+                greyData.cols,
+                greyData.rows,
+                greyData.step1(),
+                QImage::Format_Grayscale8);
+    pixmap.setPixmap( QPixmap::fromImage(qimg.rgbSwapped()) );
+
     snimokCam window;
+    window.setImage(pixmap.pixmap());
     window.setModal(true);
     window.setWindowTitle("Распознавание лиц");
     window.exec();

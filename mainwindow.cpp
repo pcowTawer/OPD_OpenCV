@@ -2,11 +2,18 @@
 #include "ui_mainwindow.h"
 #include "camera.h"
 #include "snimokcam.h"
+#include "facerecognition.h"
+#include "database.h"
 #include <QMessageBox>
 #include <QListWidget>
 #include <QFileDialog>
 #include <QPixmap>
 #include <QPalette>
+
+#include <opencv2/imgproc/imgproc.hpp>
+
+const string current_path = "C:/Users/PCOW/Documents/qtproj/OPD3/";
+FaceRecognition face_recognition(current_path + "XML/haarcascade_frontalface_default.xml", current_path + "XML/recognizer.xml", current_path + "persons.db", 0);
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -90,13 +97,35 @@ void MainWindow::on_pushButton_11_clicked()
         return;
     }
 
-    cv::Mat data = cv::imread(fileNames.at(0).toStdString() , cv::IMREAD_COLOR);
+    cv::Mat data, greyData;
+    data = cv::imread(fileNames.at(0).toStdString() , cv::IMREAD_COLOR);
+
+    if (data.empty())
+    {
+        QMessageBox::critical(this,
+                                  "Проблема при считывании изображения!", "Невозможно открыть изображение");
+        return;
+    }
+
+    cv::cvtColor(data, greyData, cv::COLOR_BGR2GRAY);
+
     QPixmap pixmap;
-    QImage qimg((unsigned char*)data.data,
-                data.cols,
-                data.rows,
-                data.step1(),
-                QImage::Format_RGB888);
+
+    int predicate_label = 0;
+    double is_sure = 0;
+    face_recognition.FindPerson(greyData, predicate_label, is_sure);
+    DBase::clearbus();
+    DBase DB(current_path + "persons.db");
+    DBase::execute(DB, "SELECT IMG FROM PEOPLE WHERE ID = " + to_string(predicate_label));
+
+    DB.~DBase();
+    int ID = predicate_label;
+
+    QImage qimg((unsigned char*)greyData.data,
+                greyData.cols,
+                greyData.rows,
+                greyData.step1(),
+                QImage::Format_Grayscale8);
     pixmap = QPixmap::fromImage(qimg.rgbSwapped());
     snimokCam window;
     window.setImage(pixmap);
@@ -107,5 +136,5 @@ void MainWindow::on_pushButton_11_clicked()
 
 void MainWindow::on_pushButton_2_clicked()
 {
-    system("start IEXPLORE.EXE \"https://github.com/pcowTawer/OPD_OpenCV\"");
+    system("start IEXPLORE.EXE \"https://github.com/lifeIP/OPENCV_QT_BOOST.git");
 }

@@ -54,7 +54,8 @@ void snimokCam::setImage(QPixmap image)
     ui->label->setPixmap(image);
 //    ui->label->setBackgroundRole(QPalette::Base);
     ui->label->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Ignored);
-    ui->label->setScaledContents(true);
+//    ui->label->setScaledContents(true);
+    ui->label->setAlignment(Qt::AlignCenter);
 }
 
 void snimokCam::on_pushButton_2_clicked()
