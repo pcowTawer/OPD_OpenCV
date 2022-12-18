@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>camera</class>
+ <widget class="QDialog" name="camera">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1125</width>
+    <height>704</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">border-left: 5px;
+background-color: rgb(248, 244, 255);
+font: 75 10pt &quot;MS Shell Dlg 2&quot;;</string>
+  </property>
+  <widget class="QPushButton" name="pushButton">
+   <property name="geometry">
+    <rect>
+     <x>730</x>
+     <y>600</y>
+     <width>211</width>
+     <height>61</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(234, 237, 253);
+border: 0.5px solid rgb(101, 126, 253);
+border-radius: 8px;
+color: rgb(105, 127, 254);
+text-align: center;
+font: 75 20pt &quot;MS Shell Dlg 2&quot;;</string>
+   </property>
+   <property name="text">
+    <string>Назад</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_2">
+   <property name="geometry">
+    <rect>
+     <x>200</x>
+     <y>600</y>
+     <width>211</width>
+     <height>61</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(234, 237, 253);
+border: 0.5px solid rgb(101, 126, 253);
+border-radius: 8px;
+color: rgb(105, 127, 254);
+text-align: center;
+font: 75 20pt &quot;MS Shell Dlg 2&quot;;</string>
+   </property>
+   <property name="text">
+    <string>Сделать снимок</string>
+   </property>
+  </widget>
+  <widget class="QGraphicsView" name="graphicsView">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>10</y>
+     <width>1081</width>
+     <height>551</height>
+    </rect>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>pushButton</sender>
+   <signal>clicked()</signal>
+   <receiver>camera</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>256</x>
+     <y>469</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>313</x>
+     <y>512</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
